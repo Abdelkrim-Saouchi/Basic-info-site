@@ -1,36 +1,28 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
+const path = require('path');
+const app = express();
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/') {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    fs.readFile('./index.html', 'utf-8', (err, data) => {
-      if (err) throw err;
-      res.write(data);
-      return res.end();
-    });
-  } else if (req.url === '/about') {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    fs.readFile('./about.html', 'utf-8', (err, data) => {
-      if (err) throw err;
-      res.write(data);
-      return res.end();
-    });
-  } else if (req.url === '/contact-me') {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    fs.readFile('./contact-me.html', 'utf-8', (err, data) => {
-      if (err) throw err;
-      res.write(data);
-      return res.end();
-    });
-  } else {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    fs.readFile('./404.html', 'utf-8', (err, data) => {
-      if (err) throw err;
-      res.write(data);
-      return res.end();
-    });
-  }
+// home page route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/views/index.html'));
 });
 
-server.listen(8080);
+// about page route
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, '/views/about.html'));
+});
+
+//contact me page route
+app.get('/contact-me', (req, res) => {
+  res.sendFile(path.join(__dirname, '/views/contact-me.html'));
+});
+
+// handle no matching urls
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(__dirname, '/views/404.html'));
+});
+
+// lunch app at port 3000
+app.listen(3000, (req, res) => {
+  console.log('Express app listening at port 3000');
+});
